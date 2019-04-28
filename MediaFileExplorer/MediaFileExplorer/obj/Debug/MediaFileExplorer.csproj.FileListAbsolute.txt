@@ -7,3 +7,12 @@ C:\Users\peave\OneDrive\Documents\Visual Studio 2017\Projects\PopulateListViewAs
 C:\Users\peave\OneDrive\Documents\Visual Studio 2017\Projects\PopulateListViewAsynchronously\PopulateListViewAsynchronously\obj\Debug\MediaFileExplorer.csproj.GenerateResource.Cache
 C:\Users\peave\OneDrive\Documents\Visual Studio 2017\Projects\PopulateListViewAsynchronously\PopulateListViewAsynchronously\obj\Debug\PopulateListViewAsynchronously.exe
 C:\Users\peave\OneDrive\Documents\Visual Studio 2017\Projects\PopulateListViewAsynchronously\PopulateListViewAsynchronously\obj\Debug\PopulateListViewAsynchronously.pdb
+C:\Users\peave\Source\Repos\MediaFileExplorer\MediaFileExplorer\MediaFileExplorer\bin\Debug\MediaFileExplorer.exe.config
+C:\Users\peave\Source\Repos\MediaFileExplorer\MediaFileExplorer\MediaFileExplorer\bin\Debug\MediaFileExplorer.exe
+C:\Users\peave\Source\Repos\MediaFileExplorer\MediaFileExplorer\MediaFileExplorer\bin\Debug\MediaFileExplorer.pdb
+C:\Users\peave\Source\Repos\MediaFileExplorer\MediaFileExplorer\MediaFileExplorer\obj\Debug\MediaFileExplorer.csprojResolveAssemblyReference.cache
+C:\Users\peave\Source\Repos\MediaFileExplorer\MediaFileExplorer\MediaFileExplorer\obj\Debug\MediaFileExplorer.MainForm.resources
+C:\Users\peave\Source\Repos\MediaFileExplorer\MediaFileExplorer\MediaFileExplorer\obj\Debug\MediaFileExplorer.Properties.Resources.resources
+C:\Users\peave\Source\Repos\MediaFileExplorer\MediaFileExplorer\MediaFileExplorer\obj\Debug\MediaFileExplorer.csproj.GenerateResource.Cache
+C:\Users\peave\Source\Repos\MediaFileExplorer\MediaFileExplorer\MediaFileExplorer\obj\Debug\MediaFileExplorer.exe
+C:\Users\peave\Source\Repos\MediaFileExplorer\MediaFileExplorer\MediaFileExplorer\obj\Debug\MediaFileExplorer.pdb

@@ -57,5 +57,17 @@ namespace MediaFileExplorer.Properties {
                 this["Categories"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string StartingPath {
+            get {
+                return ((string)(this["StartingPath"]));
+            }
+            set {
+                this["StartingPath"] = value;
+            }
+        }
     }
 }

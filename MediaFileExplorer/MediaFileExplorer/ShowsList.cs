@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace PopulateListViewAsynchronously
+namespace MediaFileExplorer
 {
     class Show
     {
@@ -114,6 +114,7 @@ namespace PopulateListViewAsynchronously
     {
         #region Properties
         private string ShowListPath;
+        private List<Show> allShowsOnList;
 
         public string GetListFilePath()
         {
@@ -131,11 +132,10 @@ namespace PopulateListViewAsynchronously
         }
         
 
-        private List<Show> allShowsOnList;
 
         public List<Show> GetAllShowsOnList()
         {
-                return allShowsOnList;
+            return allShowsOnList;
         }
 
         private void SetAllShowsOnList(List<Show> value)
@@ -154,6 +154,9 @@ namespace PopulateListViewAsynchronously
 
         public bool AddShowToList(Show show)
         {
+            if (ShowIsAlreadyOnList(show.GetName()) || show.GetFullPath() == "none.avi")
+                return false;
+
             allShowsOnList.Add(show);
             updateShowList(show);
             return true;
@@ -213,12 +216,15 @@ namespace PopulateListViewAsynchronously
         public Show GetShowFromList(string name)
         {
             Show match = new Show();
-            foreach (var show in GetAllShowsOnList())
+            var allShows = GetAllShowsOnList();
+            foreach (var show in allShows)
             {
-                if (show.GetName() == name)
+                if (show.GetFullPath() == name)
                     return show;
             }
-            return match;
+            var newShow = new Show(name);
+            AddShowToList(newShow);
+            return newShow;
         }
 
         public List<Show> LoadShowList()
@@ -228,7 +234,7 @@ namespace PopulateListViewAsynchronously
 
             if (File.Exists(ShowListPath))
             {
-                //while (Utility.IsFileLocked(new FileInfo(ShowListPath))) { System.Threading.Thread.Sleep(50); }
+                while (Utility.IsFileLocked(new FileInfo(ShowListPath))) { System.Threading.Thread.Sleep(50); }
 
                 try { xmlShowList.Load(ShowListPath); }
                 catch (Exception e) { MessageBox.Show("Error in LoadShowList " + e.Message + e.InnerException); }
@@ -236,35 +242,78 @@ namespace PopulateListViewAsynchronously
             else
             {
                 CreateShowList();
-            }            
+            }
 
-            // Try to read the shows 
-            try
+            var tryAgain = false;
+            do
             {
-                xmlShowList.Load(ShowListPath);
-                XmlNodeList shows = xmlShowList.GetElementsByTagName("Show");
-                
-                foreach (XmlNode show in shows)
+                // Try to read the shows 
+                try
                 {
-                    Show showToAdd = new Show();
-                    showToAdd.SetFullPath(show.InnerText);
-                    showToAdd.SetRating( Int32.Parse( show.Attributes.GetNamedItem( "Rating" ).Value ) );
-                    showToAdd.SetTimesWatched( Int32.Parse( show.Attributes.GetNamedItem( "Watched" ).Value ) );
-                    showToAdd.SetCategory( show.Attributes.GetNamedItem( "Category" ).Value );
+                    xmlShowList.Load(ShowListPath);
+                    XmlNodeList shows = xmlShowList.GetElementsByTagName("Show");
 
-                    if (ShowIsNotNullOrEmpty(showToAdd))
-                        showList.Add(showToAdd);
+                    foreach (XmlNode show in shows)
+                    {
+                        Show showToAdd = new Show();
+                        var showPath = show.InnerText;
+                        if (!File.Exists(showPath))
+                        {
+                            DriveInfo[] drives = DriveInfo.GetDrives();
+                            foreach (var drive in drives)
+                            {
+                                if (drive.VolumeLabel == "BigCloud")
+                                {
+                                    // Check if just the drive letter changed
+                                    if (File.Exists(drive.Name + showPath.Substring(4)))
+                                    {
+                                        showPath = drive.Name + showPath.Substring(4);
+                                    }
+                                    // If not then search for the file on the BigCloud and update the path
+                                    else
+                                    {
+                                        var allFiles = Directory.GetFiles(drive.Name + "/Movies", "*.*", SearchOption.AllDirectories);
+                                        allFiles.Concat( Directory.GetFiles( drive.Name + "/TV", "*.*", SearchOption.AllDirectories) );
+
+                                        foreach (var file in allFiles)
+                                        {
+                                            if (Path.GetFileName(file) == Path.GetFileName(showPath))
+                                            {
+                                                showPath = Path.GetFullPath(file);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        showToAdd.SetFullPath(showPath);
+
+                        showToAdd.SetRating(Int32.Parse(show.Attributes.GetNamedItem("Rating").Value));
+                        showToAdd.SetTimesWatched(Int32.Parse(show.Attributes.GetNamedItem("Watched").Value));
+                        showToAdd.SetCategory(show.Attributes.GetNamedItem("Category").Value);
+
+                        if (ShowIsNotNullOrEmpty(showToAdd))
+                            showList.Add(showToAdd);
+                    }
                 }
-            }
-            catch (Exception e)// Most problems occur from exiting while reading/writing (Should add a lock to prevent this )
-            {
-                string error = "Error in LoadShowList " + e.Message + e.InnerException;
-                MessageBox.Show(error);
-            }
+                catch (Exception e)// Most problems occur from exiting while reading/writing (Should add a lock to prevent this )
+                {
+                    if (e.Message.IndexOf("Access to the path") != -1)
+                    {
+                        tryAgain = true;
+                    }
+                    else
+                    {
+                        string error = "Error in LoadShowList " + e.Message + e.InnerException;
+                        MessageBox.Show(error);
+                    }
+                }
+            } while (tryAgain);
 
             if (showList.Count > 0)
                 SetAllShowsOnList(showList);
 
+            allShowsOnList = showList;
             return showList;
         }
 
