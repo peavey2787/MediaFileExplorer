@@ -19,7 +19,11 @@ namespace MediaFileExplorer
 
         ListViewItem clickedPlayListItem;
         List<KeyValuePair<string, int>> lastLocation = new List<KeyValuePair<string, int>>();
+        private string currentLocation = "D:\\Movies";
         private bool backButtonClicked = false;
+        private bool searchByCategoryToggle = false;
+        private bool mouseDown = false;
+        private Point lastMouseLocation;
         private string InvalidPathError = "Invalid Path!";
         private string defaultMoviesPath = "D:\\Movies";
         private string defaultTVPath = "D:\\TV";
@@ -94,6 +98,7 @@ namespace MediaFileExplorer
         {
             while (!MoviesListView.Visible) { Thread.Sleep(50); }
             MoviesListView.Columns.Add(" ", MoviesListView.Width);
+            listViewProgressBar.Visible = true;
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -115,6 +120,7 @@ namespace MediaFileExplorer
             if (Directory.Exists(startingPath))
             {
                 Utility.InvokeIfRequired(moviesPath, () => { moviesPath.Text = startingPath; } );
+                    Utility.InvokeIfRequired(listViewProgressBar, () => { listViewProgressBar.Visible = true; });
                     PopulateListView(startingPath);
                 }
             });
@@ -125,6 +131,7 @@ namespace MediaFileExplorer
         {
             int selectedIndex = 0;
             var previousLocation = "";
+            currentLocation = path;
 
             Utility.InvokeIfRequired(listViewProgressBar, () => { listViewProgressBar.Visible = true; });
             Utility.InvokeIfRequired(ProgressLabel, () => { ProgressLabel.Text = "Starting to get files..."; });
@@ -138,7 +145,7 @@ namespace MediaFileExplorer
             if (!backButtonClicked && !File.Exists(path) && lastLocation.Count == 0 || lastLocation.Last().Key != path)
                     lastLocation.Add(new KeyValuePair<string, int>(previousLocation, selectedIndex));             
 
-            await Task.Run(async () =>
+            await Task.Run( () =>
             {
                 if (Directory.Exists(path))
                 {
@@ -153,39 +160,30 @@ namespace MediaFileExplorer
                         if ( Utility.IsMediaFile( movie ) && 
                             ( movie.ToLower() ).IndexOf("sample") != 0)
                         {
-                            await Task.Run(() => {
+                            // 60mbs
+                            var fi = new FileInfo(movie);
+                            if (fi.Length >= 60000000)
+                            {
                                 show = ShowsList.GetShowFromList(movie);
-                                show.GetCategory();
-                                if ( ShowsList.ShowIsAlreadyOnList( show.GetName() ) )
-                                    show = ShowsList.GetShowFromList( show.GetFullPath() );
-                                else
+                                if (show.GetName() == "none.avi")
                                     ShowsList.AddShowToList(show);
-                            });
-
-                            ListViewItem li = new ListViewItem();
-                            li.Text = show.GetName();
-                            li.Name = show.GetFullPath();
-                            li.Tag = show;
-                            li.ImageKey = "unknown.png";
-                            li.ToolTipText = GenerateShowToolTipText(show);
-                            listItemsFiles.Add(li);
+                                listItemsFiles.Add(CreateListViewItem(show));
+                            }
                         }                        
                     }
-
-
-                    Utility.InvokeIfRequired(listViewProgressBar, () => { listViewProgressBar.Visible = false; });
 
                     var folders = Directory.GetDirectories(path);
                     foreach (var folder in folders)
                     {
                         ListViewItem li = new ListViewItem();
                         var added = false;
+                        var isMediaFile = false;
 
                         // If movie is only media file inside folder only add the movie
                         show = new Show(Path.GetFullPath(folder));
-                        var subFiles = Directory.GetFiles(folder);
+                        var subFiles = Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories);
 
-                        if (subFiles.Length <= 10)
+                        if (subFiles.Length <= 5)
                         {
                             foreach (var file in subFiles)
                             {
@@ -195,41 +193,51 @@ namespace MediaFileExplorer
                                     // 60mbs
                                     if (fi.Length >= 60000000)
                                     {
+                                        isMediaFile = true;
                                         // If there are more than 1 movie in the folder then add the folder
                                         if (added)
                                         {
                                             added = false;
-                                            show.SetFullPath(Path.GetFullPath(folder));
+                                            show.SetFullPath(Path.GetFullPath(file));
                                             listItemsFiles.RemoveAt(listItemsFiles.Count - 1);
                                             break;
                                         }
-                                        li = new ListViewItem();
                                         show.SetFullPath(fi.FullName);
-                                        li.Text = show.GetName();
-                                        li.Name = show.GetFullPath();
-                                        li.Tag = show;
-                                        li.ImageKey = "unknown.png";
-                                        li.ToolTipText = GenerateShowToolTipText(show);
-                                        listItemsFiles.Add(li); 
+                                        show = ShowsList.GetShowFromList(fi.FullName);
+                                        listItemsFiles.Add(CreateListViewItem(show));
                                         added = true;
                                     }
+                                }
+                                else
+                                {
+                                    isMediaFile = false;
                                 }
                             }
                         }
 
-                        if (!added)
+                        if (!added && ( isMediaFile || Directory.Exists(show.GetFullPath() ) ))
                         {
-                            li.Text = show.GetName();
-                            li.Name = show.GetFullPath();
-                            li.Tag = show;
-                            li.ImageKey = "folder.png";
-                            listItemsFolders.Add(li);
+                            // If not a media file make sure there is a movie in the Dir.
+                            if (!isMediaFile)
+                            {
+                                var randDirFiles = Directory.GetFiles(show.GetFullPath(), "*.*", SearchOption.AllDirectories); 
+                                var addRandDir = false;
+                                foreach (var file in randDirFiles)
+                                {
+                                    var fileInfo = new FileInfo(file);
+                                    if (fileInfo.Length >= 60000000)
+                                        addRandDir = true;
+                                }
+                                if (addRandDir)
+                                    listItemsFiles.Add(CreateListViewItem(show));
+                            }
+                            else
+                                listItemsFiles.Add(CreateListViewItem(show));
                         }
                     }
+                    Utility.InvokeIfRequired(listViewProgressBar, () => { listViewProgressBar.Visible = false; });
                     Utility.InvokeIfRequired(MoviesListView, () => { MoviesListView.Items.AddRange(listItemsFiles.ToArray()); });
                     Utility.InvokeIfRequired(MoviesListView, () => { MoviesListView.Items.AddRange(listItemsFolders.ToArray()); });
-
-                    
                     Utility.InvokeIfRequired(ProgressLabel, () => { ProgressLabel.Text = "Finished getting all files."; });
                 }
 
@@ -242,13 +250,31 @@ namespace MediaFileExplorer
                         MoviesListView.Select();
                     });
 
-                    lastLocation.RemoveAt(lastLocation.Count - 1);
+                    if(lastLocation.Count - 1 >= 0)
+                        lastLocation.RemoveAt(lastLocation.Count - 1);
                     backButtonClicked = false;
                 }
             });
         }
 
-
+        private ListViewItem CreateListViewItem(Show show)
+        {
+            ListViewItem li = new ListViewItem();
+            li.Text = show.GetName();
+            li.Name = show.GetFullPath();
+            li.Tag = show;
+            if (Directory.Exists(show.GetFullPath()))
+            {
+                li.ImageKey = "folder.png";
+            }
+            else
+            {
+                li.ImageKey = "unknown.png";
+            }
+            li.ToolTipText = GenerateShowToolTipText(show);
+            li.Font = new Font("Times New Roman", 12, FontStyle.Bold);
+            return li;
+        }
 
         #region Movies/Back/Clear list Clicks
 
@@ -277,14 +303,8 @@ namespace MediaFileExplorer
                             {
                                 if ( Utility.IsMediaFile( file ) && Path.GetFileName( file ).ToLower().IndexOf( moviesPath.Text.ToLower() ) != -1 )
                                 {
-                                    ListViewItem li = new ListViewItem();
-                                    var show = new Show(Path.GetFullPath(file));
-                                    li.Text = show.GetName();
-                                    li.Name = show.GetFullPath();
-                                    li.Tag = show;
-                                    li.ImageKey = "unknown.png";
-                                    li.ToolTipText = GenerateShowToolTipText(show);
-                                    listItemsFiles.Add(li);
+                                    var show = ShowsList.GetShowFromList(Path.GetFullPath(file));
+                                    listItemsFiles.Add( CreateListViewItem(show) );
                                 }
                             }
 
@@ -453,8 +473,7 @@ namespace MediaFileExplorer
             }
             else if (e.Button == MouseButtons.Right)
             {
-                Show selected = (Show)li.Tag;
-                Show show = ShowsList.GetShowFromList(selected.GetName());
+                Show show = (Show)li.Tag;
                 MoviesListView.ContextMenuStrip = CreateCategoryContextMenu(show);
             }
             else
@@ -590,7 +609,6 @@ namespace MediaFileExplorer
             + "Category: " + show.GetCategory();
         }
 
-
         #endregion
 
         #region Vlc Playlist
@@ -605,6 +623,7 @@ namespace MediaFileExplorer
                 CreateVLCPlaylist(PlayList.Items, savePath);
                 System.Diagnostics.Process.Start(savePath);
                 ShowsList.UpdateTimesWatched(PlayList.Items);
+                PopulateListView(currentLocation);
             }
             else if(string.IsNullOrEmpty(PlaylistFileName.Text))
                 MessageBox.Show("Please enter a Playlist filename!");
@@ -776,25 +795,17 @@ namespace MediaFileExplorer
             }
         }
 
-        private bool searchByCategoryToggle = false;
+        // Search By Category
         private void searchByCategoryButton_Click(object sender, EventArgs e)
         {
             if (searchByCategoryToggle)
-            {
-                searchByCategoryListView.Visible = false;
-                searchByCategoryToggle = false;
-            }
+                hideSearchByCategoryListView();
             else
             {
                 searchByCategoryListView.Visible = true;
+                createCategoryRemovePanel();
                 searchByCategoryToggle = true;
             }
-        }
-        private void searchByCategoryListView_Click(object sender, ListViewItemSelectionChangedEventArgs e)
-        {
-            searchByCategoryListView.Visible = false;
-            searchByCategoryToggle = false;
-            Controls["categoryPanel"].Visible = false;
         }
         private async void searchByCategoryListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
@@ -811,15 +822,7 @@ namespace MediaFileExplorer
                     foreach (var show in ShowsList.GetAllShowsOnList())
                     {
                         if (show.GetCategory() == searchCategory)
-                        {
-                            ListViewItem li = new ListViewItem();
-                            li.Text = show.GetName();
-                            li.Name = show.GetFullPath();
-                            li.Tag = show;
-                            li.ImageKey = "unknown.png";
-                            li.ToolTipText = GenerateShowToolTipText(show);
-                            listItemsFiles.Add(li);
-                        }
+                            listItemsFiles.Add( CreateListViewItem(show) );
                     }
 
                     if (listItemsFiles.Count == 0)
@@ -840,33 +843,32 @@ namespace MediaFileExplorer
                 });
             }
         }
-
         private void searchByCategoryListView_MouseDown(object sender, MouseEventArgs e)
         {
-            searchByCategoryListView.Visible = false;
-            searchByCategoryToggle = false;
-            Controls["categoryPanel"].Visible = false;
+            hideSearchByCategoryListView();
         }
-
         private void searchByCategoryListView_Leave(object sender, EventArgs e)
         {
-            searchByCategoryListView.Visible = false;
-            searchByCategoryToggle = false;
-            Controls["categoryPanel"].Visible = false;
+            hideSearchByCategoryListView();
         }
-
         private void searchByCategoryListView_MouseLeave(object sender, EventArgs e)
         {
-            var mousePos = PointToClient(MousePosition);
-            if ( !searchByCategoryListView.Bounds.Contains(mousePos) )
-            { 
-                searchByCategoryListView.Visible = false;
-                searchByCategoryToggle = false;
-                Controls["categoryPanel"].Visible = false;
+            if ( !searchByCategoryListView.Bounds.Contains( PointToClient( MousePosition ) ) )
+                hideSearchByCategoryListView();
+        }
+        private void hideSearchByCategoryListView()
+        {
+            searchByCategoryListView.Hide();
+            searchByCategoryToggle = false;
+            Controls["categoryPanel"].Hide();
+            foreach(Control ctrl in Controls["categoryPanel"].Controls)
+            {
+                ctrl.SendToBack();
+                ctrl.Hide();
+                ctrl.Visible = false;
             }
         }
-        
-        private void searchByCategoryListView_MouseEnter(object sender, EventArgs e)
+        private void createCategoryRemovePanel()
         {
             int x = 0;
             Panel panel = new Panel();
@@ -883,18 +885,18 @@ namespace MediaFileExplorer
                 btn.Name = "categoryRemoveButton" + item.Text;
                 btn.Click += searchByCategoryRemoveItem_Click;
                 btn.Top = item.Position.Y + 1;
-                btn.Left = 0;// searchByCategoryListView.Location.X + item.Position.X + 130;
+                btn.Left = 0;
                 btn.Width = 30;
                 btn.Height = 18;
                 btn.Text = "X";
+                btn.ForeColor = Color.Black;
+                btn.Show();
                 panel.Controls.Add(btn);
-                btn.BringToFront();
                 x++;
             }
             Controls.Add(panel);
             panel.BringToFront();
         }
-
         private void searchByCategoryRemoveItem_Click(object sender, EventArgs e)
         {
             var btn = (Button)sender;
@@ -907,6 +909,43 @@ namespace MediaFileExplorer
                 searchByCategoryListView.FindItemWithText(name).Remove();
                 searchByCategoryListView.Refresh();
                 btn.Dispose();
+            }
+        }
+
+        // Close / Minimize Form
+        private void closeApp_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+        private void minimizeApp_Click(object sender, EventArgs e)
+        {
+            WindowState = FormWindowState.Minimized;
+        }
+        // Move Form on Mouse Down
+        private void MainForm_MouseDown(object sender, MouseEventArgs e)
+        {
+            mouseDown = true;
+            if (e.Button == MouseButtons.Left)
+            {
+                Cursor.Current = Cursors.SizeAll;
+                lastMouseLocation = e.Location;
+            }
+        }
+        private void MainForm_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (mouseDown)
+            {
+                Location = new Point(
+                    (Location.X - lastMouseLocation.X) + e.X, (Location.Y - lastMouseLocation.Y) + e.Y);
+                Update();
+            }
+        }
+        private void MainForm_MouseUp(object sender, MouseEventArgs e)
+        {
+            mouseDown = false;
+            if (e.Button == MouseButtons.Left)
+            {
+                Cursor.Current = Cursors.Default;
             }
         }
     }

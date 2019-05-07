@@ -55,25 +55,32 @@
             this.searchByCategoryListView = new System.Windows.Forms.ListView();
             this.CategoriesHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.searchByCategoryButton = new System.Windows.Forms.Button();
+            this.closeApp = new System.Windows.Forms.Button();
+            this.minimizeApp = new System.Windows.Forms.Button();
             this.ChangeMoviesPath.SuspendLayout();
             this.ChangeTVPath.SuspendLayout();
             this.SuspendLayout();
             // 
             // getMovies
             // 
-            this.getMovies.Location = new System.Drawing.Point(53, 5);
+            this.getMovies.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.getMovies.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.getMovies.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.getMovies.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.getMovies.Location = new System.Drawing.Point(15, 5);
             this.getMovies.Name = "getMovies";
-            this.getMovies.Size = new System.Drawing.Size(98, 20);
+            this.getMovies.Size = new System.Drawing.Size(136, 26);
             this.getMovies.TabIndex = 0;
             this.getMovies.Text = "Get Movies";
-            this.getMovies.UseVisualStyleBackColor = true;
+            this.getMovies.UseVisualStyleBackColor = false;
             this.getMovies.Click += new System.EventHandler(this.getMovies_Click);
             // 
             // moviesPath
             // 
+            this.moviesPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.moviesPath.Location = new System.Drawing.Point(157, 5);
             this.moviesPath.Name = "moviesPath";
-            this.moviesPath.Size = new System.Drawing.Size(377, 20);
+            this.moviesPath.Size = new System.Drawing.Size(377, 26);
             this.moviesPath.TabIndex = 1;
             this.moviesPath.KeyDown += new System.Windows.Forms.KeyEventHandler(this.moviesPath_KeyDown);
             // 
@@ -83,15 +90,19 @@
             this.MoviesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.MoviesListView.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.MoviesListView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.MoviesListView.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.MoviesListView.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MoviesListView.ForeColor = System.Drawing.SystemColors.Info;
             this.MoviesListView.FullRowSelect = true;
             this.MoviesListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.MoviesListView.HideSelection = false;
-            this.MoviesListView.LabelEdit = true;
             this.MoviesListView.LargeImageList = this.LargeImageList;
-            this.MoviesListView.Location = new System.Drawing.Point(10, 71);
+            this.MoviesListView.Location = new System.Drawing.Point(10, 81);
             this.MoviesListView.MultiSelect = false;
             this.MoviesListView.Name = "MoviesListView";
-            this.MoviesListView.Size = new System.Drawing.Size(821, 519);
+            this.MoviesListView.Size = new System.Drawing.Size(821, 559);
             this.MoviesListView.TabIndex = 2;
             this.MoviesListView.UseCompatibleStateImageBehavior = false;
             this.MoviesListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.MoviesListView_MouseDoubleClick);
@@ -108,7 +119,7 @@
             // 
             this.ProgressLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.ProgressLabel.AutoSize = true;
-            this.ProgressLabel.Location = new System.Drawing.Point(12, 595);
+            this.ProgressLabel.Location = new System.Drawing.Point(12, 645);
             this.ProgressLabel.Name = "ProgressLabel";
             this.ProgressLabel.Size = new System.Drawing.Size(72, 13);
             this.ProgressLabel.TabIndex = 3;
@@ -116,13 +127,17 @@
             // 
             // Movies
             // 
-            this.Movies.Location = new System.Drawing.Point(167, 31);
+            this.Movies.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.Movies.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.Movies.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Movies.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.Movies.Location = new System.Drawing.Point(157, 42);
             this.Movies.Name = "Movies";
             this.Movies.Size = new System.Drawing.Size(103, 34);
             this.Movies.TabIndex = 4;
             this.Movies.Tag = "";
             this.Movies.Text = "Movies";
-            this.Movies.UseVisualStyleBackColor = true;
+            this.Movies.UseVisualStyleBackColor = false;
             this.Movies.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Movies_MouseClick);
             this.Movies.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Movies_MouseDown);
             // 
@@ -155,13 +170,17 @@
             // 
             // TVShows
             // 
-            this.TVShows.Location = new System.Drawing.Point(291, 32);
+            this.TVShows.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.TVShows.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.TVShows.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TVShows.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.TVShows.Location = new System.Drawing.Point(278, 43);
             this.TVShows.Name = "TVShows";
             this.TVShows.Size = new System.Drawing.Size(100, 33);
             this.TVShows.TabIndex = 5;
             this.TVShows.Tag = "";
             this.TVShows.Text = "TV Shows";
-            this.TVShows.UseVisualStyleBackColor = true;
+            this.TVShows.UseVisualStyleBackColor = false;
             this.TVShows.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TVShows_MouseClick);
             this.TVShows.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TVShows_MouseDown);
             // 
@@ -194,12 +213,16 @@
             // 
             // Back
             // 
-            this.Back.Location = new System.Drawing.Point(10, 32);
+            this.Back.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.Back.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.Back.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Back.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.Back.Location = new System.Drawing.Point(10, 44);
             this.Back.Name = "Back";
             this.Back.Size = new System.Drawing.Size(88, 31);
             this.Back.TabIndex = 6;
             this.Back.Text = "Back";
-            this.Back.UseVisualStyleBackColor = true;
+            this.Back.UseVisualStyleBackColor = false;
             this.Back.Click += new System.EventHandler(this.Back_Click);
             // 
             // PlayList
@@ -207,15 +230,17 @@
             this.PlayList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.PlayList.AutoArrange = false;
+            this.PlayList.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.PlayList.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.PlayList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Title});
+            this.PlayList.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.PlayList.FullRowSelect = true;
-            this.PlayList.GridLines = true;
             this.PlayList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.PlayList.Location = new System.Drawing.Point(840, 71);
+            this.PlayList.Location = new System.Drawing.Point(840, 97);
             this.PlayList.MultiSelect = false;
             this.PlayList.Name = "PlayList";
-            this.PlayList.Size = new System.Drawing.Size(190, 519);
+            this.PlayList.Size = new System.Drawing.Size(190, 561);
             this.PlayList.TabIndex = 7;
             this.PlayList.UseCompatibleStateImageBehavior = false;
             this.PlayList.View = System.Windows.Forms.View.Details;
@@ -225,27 +250,32 @@
             // 
             // Title
             // 
-            this.Title.Text = "Title";
+            this.Title.Text = "Playlist:";
             this.Title.Width = 184;
             // 
             // Play
             // 
             this.Play.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Play.Location = new System.Drawing.Point(969, 28);
+            this.Play.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.Play.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.Play.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Play.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.Play.Location = new System.Drawing.Point(982, 61);
             this.Play.Name = "Play";
-            this.Play.Size = new System.Drawing.Size(61, 39);
+            this.Play.Size = new System.Drawing.Size(48, 30);
             this.Play.TabIndex = 8;
             this.Play.Text = "Play";
-            this.Play.UseVisualStyleBackColor = true;
+            this.Play.UseVisualStyleBackColor = false;
             this.Play.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Play_MouseClick);
             // 
             // PlaylistFileName
             // 
             this.PlaylistFileName.AcceptsReturn = true;
             this.PlaylistFileName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.PlaylistFileName.Location = new System.Drawing.Point(840, 5);
+            this.PlaylistFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.PlaylistFileName.Location = new System.Drawing.Point(840, 29);
             this.PlaylistFileName.Name = "PlaylistFileName";
-            this.PlaylistFileName.Size = new System.Drawing.Size(190, 20);
+            this.PlaylistFileName.Size = new System.Drawing.Size(190, 26);
             this.PlaylistFileName.TabIndex = 9;
             this.PlaylistFileName.Text = "VLC_Playlist";
             this.PlaylistFileName.TextChanged += new System.EventHandler(this.PlaylistFileName_TextChanged);
@@ -254,21 +284,27 @@
             // ClearList
             // 
             this.ClearList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.ClearList.Location = new System.Drawing.Point(840, 46);
+            this.ClearList.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.ClearList.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.ClearList.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ClearList.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.ClearList.Location = new System.Drawing.Point(840, 66);
             this.ClearList.Name = "ClearList";
-            this.ClearList.Size = new System.Drawing.Size(59, 21);
+            this.ClearList.Size = new System.Drawing.Size(59, 25);
             this.ClearList.TabIndex = 10;
             this.ClearList.Text = "Clear List";
-            this.ClearList.UseVisualStyleBackColor = true;
+            this.ClearList.UseVisualStyleBackColor = false;
             this.ClearList.Click += new System.EventHandler(this.ClearList_Click);
             // 
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(761, 8);
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.label1.Location = new System.Drawing.Point(836, 7);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(73, 13);
+            this.label1.Size = new System.Drawing.Size(107, 20);
             this.label1.TabIndex = 11;
             this.label1.Text = "Playlist Name:";
             // 
@@ -284,12 +320,17 @@
             // 
             // removeFromPlaylist
             // 
-            this.removeFromPlaylist.Location = new System.Drawing.Point(905, 46);
+            this.removeFromPlaylist.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.removeFromPlaylist.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.removeFromPlaylist.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.removeFromPlaylist.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.removeFromPlaylist.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.removeFromPlaylist.Location = new System.Drawing.Point(905, 66);
             this.removeFromPlaylist.Name = "removeFromPlaylist";
-            this.removeFromPlaylist.Size = new System.Drawing.Size(58, 21);
+            this.removeFromPlaylist.Size = new System.Drawing.Size(71, 25);
             this.removeFromPlaylist.TabIndex = 13;
-            this.removeFromPlaylist.Text = "Remove";
-            this.removeFromPlaylist.UseVisualStyleBackColor = true;
+            this.removeFromPlaylist.Text = "Delete";
+            this.removeFromPlaylist.UseVisualStyleBackColor = false;
             this.removeFromPlaylist.Click += new System.EventHandler(this.removeFromPlaylist_Click);
             // 
             // searchByCategoryListView
@@ -298,7 +339,7 @@
             this.CategoriesHeader});
             this.searchByCategoryListView.HideSelection = false;
             this.searchByCategoryListView.HoverSelection = true;
-            this.searchByCategoryListView.Location = new System.Drawing.Point(531, 32);
+            this.searchByCategoryListView.Location = new System.Drawing.Point(533, 58);
             this.searchByCategoryListView.Name = "searchByCategoryListView";
             this.searchByCategoryListView.Size = new System.Drawing.Size(156, 255);
             this.searchByCategoryListView.TabIndex = 14;
@@ -308,7 +349,6 @@
             this.searchByCategoryListView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.searchByCategoryListView_ItemSelectionChanged);
             this.searchByCategoryListView.Leave += new System.EventHandler(this.searchByCategoryListView_Leave);
             this.searchByCategoryListView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.searchByCategoryListView_MouseDown);
-            this.searchByCategoryListView.MouseEnter += new System.EventHandler(this.searchByCategoryListView_MouseEnter);
             this.searchByCategoryListView.MouseLeave += new System.EventHandler(this.searchByCategoryListView_MouseLeave);
             // 
             // CategoriesHeader
@@ -318,19 +358,54 @@
             // 
             // searchByCategoryButton
             // 
-            this.searchByCategoryButton.Location = new System.Drawing.Point(422, 32);
+            this.searchByCategoryButton.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.searchByCategoryButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.searchByCategoryButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.searchByCategoryButton.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.searchByCategoryButton.Location = new System.Drawing.Point(422, 42);
             this.searchByCategoryButton.Name = "searchByCategoryButton";
-            this.searchByCategoryButton.Size = new System.Drawing.Size(112, 31);
+            this.searchByCategoryButton.Size = new System.Drawing.Size(112, 34);
             this.searchByCategoryButton.TabIndex = 15;
             this.searchByCategoryButton.Text = "Search By Category:";
-            this.searchByCategoryButton.UseVisualStyleBackColor = true;
+            this.searchByCategoryButton.UseVisualStyleBackColor = false;
             this.searchByCategoryButton.Click += new System.EventHandler(this.searchByCategoryButton_Click);
+            // 
+            // closeApp
+            // 
+            this.closeApp.BackColor = System.Drawing.SystemColors.MenuText;
+            this.closeApp.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.closeApp.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.closeApp.ForeColor = System.Drawing.Color.Red;
+            this.closeApp.Location = new System.Drawing.Point(1013, 0);
+            this.closeApp.Name = "closeApp";
+            this.closeApp.Size = new System.Drawing.Size(22, 27);
+            this.closeApp.TabIndex = 16;
+            this.closeApp.Text = "X";
+            this.closeApp.UseVisualStyleBackColor = false;
+            this.closeApp.Click += new System.EventHandler(this.closeApp_Click);
+            // 
+            // minimizeApp
+            // 
+            this.minimizeApp.BackColor = System.Drawing.SystemColors.MenuText;
+            this.minimizeApp.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.minimizeApp.Font = new System.Drawing.Font("Unispace", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.minimizeApp.ForeColor = System.Drawing.Color.Red;
+            this.minimizeApp.Location = new System.Drawing.Point(985, 0);
+            this.minimizeApp.Name = "minimizeApp";
+            this.minimizeApp.Size = new System.Drawing.Size(22, 27);
+            this.minimizeApp.TabIndex = 17;
+            this.minimizeApp.Text = "-";
+            this.minimizeApp.UseVisualStyleBackColor = false;
+            this.minimizeApp.Click += new System.EventHandler(this.minimizeApp_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1035, 617);
+            this.BackColor = System.Drawing.SystemColors.WindowFrame;
+            this.ClientSize = new System.Drawing.Size(1035, 667);
+            this.Controls.Add(this.minimizeApp);
+            this.Controls.Add(this.closeApp);
             this.Controls.Add(this.searchByCategoryButton);
             this.Controls.Add(this.searchByCategoryListView);
             this.Controls.Add(this.removeFromPlaylist);
@@ -347,10 +422,16 @@
             this.Controls.Add(this.MoviesListView);
             this.Controls.Add(this.moviesPath);
             this.Controls.Add(this.getMovies);
+            this.ForeColor = System.Drawing.SystemColors.Control;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.MinimumSize = new System.Drawing.Size(900, 375);
             this.Name = "MainForm";
             this.Text = "Media File Explorer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Shown += new System.EventHandler(this.Form1_Shown);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseMove);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseUp);
             this.ChangeMoviesPath.ResumeLayout(false);
             this.ChangeMoviesPath.PerformLayout();
             this.ChangeTVPath.ResumeLayout(false);
@@ -387,6 +468,8 @@
         private System.Windows.Forms.ListView searchByCategoryListView;
         private System.Windows.Forms.Button searchByCategoryButton;
         private System.Windows.Forms.ColumnHeader CategoriesHeader;
+        private System.Windows.Forms.Button closeApp;
+        private System.Windows.Forms.Button minimizeApp;
     }
 }
 

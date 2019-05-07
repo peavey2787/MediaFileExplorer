@@ -154,15 +154,15 @@ namespace MediaFileExplorer
 
         public bool AddShowToList(Show show)
         {
-            if (ShowIsAlreadyOnList(show.GetName()) || show.GetFullPath() == "none.avi")
+            if (ShowIsAlreadyOnList(show.GetFullPath()) || show.GetFullPath() == "none.avi")
                 return false;
 
             allShowsOnList.Add(show);
-            updateShowList(show);
+            updateShowList(new Show(), show);
             return true;
         }
 
-        private void updateShowList(Show show)
+        private void updateShowList(Show oldShow, Show newShow)
         {
             //Load the showlist file and append the new show
             XmlDocument xmlDoc = new XmlDocument();
@@ -180,34 +180,48 @@ namespace MediaFileExplorer
                 catch (Exception e) { MessageBox.Show("Error in LoadShowList " + e.Message + e.InnerException); }
             }
 
-
             var rootNode = xmlDoc.DocumentElement;
-
             XmlNode showNode = xmlDoc.CreateElement("Show");
-            showNode.InnerText = show.GetFullPath();
+            showNode.InnerText = newShow.GetFullPath();
 
             XmlAttribute attribute = xmlDoc.CreateAttribute("Rating");
-            attribute.Value = show.GetRating().ToString();
+            attribute.Value = newShow.GetRating().ToString();
             showNode.Attributes.Append(attribute);
 
             attribute = xmlDoc.CreateAttribute("Watched");
-            attribute.Value = show.GetTimesWatched().ToString();
+            attribute.Value = newShow.GetTimesWatched().ToString();
             showNode.Attributes.Append(attribute);
 
             attribute = xmlDoc.CreateAttribute("Category");
-            attribute.Value = show.GetCategory();
+            attribute.Value = newShow.GetCategory();
             showNode.Attributes.Append(attribute);
 
+            XmlNodeList showsNode = xmlDoc.GetElementsByTagName("Show");
+            foreach (XmlNode node in showsNode)
+            {
+                if(node.InnerText == newShow.GetFullPath())
+                {
+                    rootNode.ReplaceChild(showNode, node);
+                    xmlDoc.Save(ShowListPath);
+                    if (allShowsOnList.FindIndex(ind => ind.GetFullPath() == oldShow.GetFullPath()) != -1)
+                        allShowsOnList[allShowsOnList.FindIndex(ind => ind.GetFullPath() == oldShow.GetFullPath())] = newShow;
+                    else
+                        AddShowToList(newShow);
+                    return;
+                }
+            }
+            
             rootNode.AppendChild(showNode);
-
+            AddShowToList(newShow);
             xmlDoc.Save(ShowListPath);
+            return;
         }
 
         public bool ShowIsAlreadyOnList(string name)
         {
             foreach (var item in GetAllShowsOnList())
             {
-                if (item.GetName() == name)
+                if (item.GetFullPath() == name)
                     return true;
             }
             return false;
@@ -312,8 +326,7 @@ namespace MediaFileExplorer
 
             if (showList.Count > 0)
                 SetAllShowsOnList(showList);
-
-            allShowsOnList = showList;
+            
             return showList;
         }
 
@@ -353,57 +366,26 @@ namespace MediaFileExplorer
 
         public void UpdateTimesWatched(ListView.ListViewItemCollection items)
         {
-            System.Xml.XmlDocument xmlShowList = new System.Xml.XmlDocument();
-            xmlShowList.Load(ShowListPath);
-
-            System.Xml.XmlNodeList showsNode = xmlShowList.GetElementsByTagName("Show");
-            foreach (System.Xml.XmlNode showElem in showsNode)
+            foreach (ListViewItem item in items)
             {
-
-                foreach (System.Xml.XmlNode attributes in showElem.ChildNodes)
-                {
-                    Show listShow = new Show();
-
-                    bool update = false;
-
-                    foreach (ListViewItem item in items)
-                    {
-                        Show show = (Show)item.Tag;
-
-                            switch (attributes.Name)
-                            {
-                                case "Name":
-                                    if (show.GetName() == attributes.InnerText)
-                                    {
-                                        update = true;
-                                    }
-                                    break;
-                                case "Watched":
-                                    if(update)
-                                    {
-                                        attributes.InnerText = show.GetTimesWatched().ToString();
-                                    }
-                                    break;
-                            }
-                    }
-                }                
-            }
-
-            //while (Utility.IsFileLocked(new FileInfo(ShowListPath))) { System.Threading.Thread.Sleep(50); }
-            xmlShowList.Save(ShowListPath);
-
-
+                Show show = (Show)item.Tag;
+                var newShow = new Show();
+                newShow.SetFullPath(show.GetFullPath());
+                newShow.SetRating(show.GetRating());
+                newShow.SetCategory(show.GetCategory());
+                newShow.SetTimesWatched(show.GetTimesWatched() + 1);
+                updateShowList(show, newShow);
+            }   
         }
 
 
         public void UpdateCategory(Show show)
         {
+            updateShowList(show, show);
+            /*
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.Load(ShowListPath);
-            //XmlNodeList xnList = xml.SelectNodes("/Library/Show[@='M']");
-            int i = 0;
             XmlNodeList showsNode = xmlDoc.GetElementsByTagName("Show");
-            int index = 0;
             foreach (XmlNode showElem in showsNode)
             {
                 if (showElem.InnerText == show.GetFullPath())
@@ -412,7 +394,7 @@ namespace MediaFileExplorer
                     xmlDoc.Save(ShowListPath);
                     return;
                 }
-            }
+            }*/
         }
     }
 }
